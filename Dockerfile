@@ -1,6 +1,14 @@
-FROM python:3.10-slim
+FROM python:3.13-slim
 
 WORKDIR /app
+
+# Install build dependencies for pydantic-core (Rust compilation)
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    gcc \
+    g++ \
+    libc6-dev \
+    && rm -rf /var/lib/apt/lists/*
 
 RUN pip install uv
 
@@ -17,4 +25,4 @@ EXPOSE ${MCP_SSE_PORT} ${MCP_STREAMABLE_HTTP_PORT}
 
 ENV PYTHONUNBUFFERED=1
 
-CMD ["uv", "run", "sourcegraph-mcp"]
+CMD ["uv", "run", "src/main.py"]
